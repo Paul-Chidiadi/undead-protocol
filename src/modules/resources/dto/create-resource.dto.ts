@@ -49,6 +49,14 @@ export class CreateResourceDto {
   @IsArray()
   @IsNotEmpty()
   tags: string[];
+
+  @ApiProperty({
+    description: 'Address of the project',
+    example: 'Ech68sbvs88sndv9s8vnbsvns0HLqrstUvw',
+  })
+  @IsString()
+  @IsNotEmpty()
+  projectAddress: string;
 }
 
 export class CreateResourceTreeDto {
@@ -66,6 +74,14 @@ export class CreateResourceTreeDto {
   @IsString()
   @IsNotEmpty()
   resourceAddress: string;
+
+  @ApiProperty({
+    description: 'Address of the project',
+    example: 'Ech68sbvs88sndv9s8vnbsvns0HLqrstUvw',
+  })
+  @IsString()
+  @IsNotEmpty()
+  projectAddress: string;
 }
 
 export class CreateBadgeDto {
@@ -75,4 +91,12 @@ export class CreateBadgeDto {
   @IsString()
   @IsNotEmpty()
   authPass: string;
+
+  @ApiProperty({
+    description: 'Address of the project',
+    example: 'Ech68sbvs88sndv9s8vnbsvns0HLqrstUvw',
+  })
+  @IsString()
+  @IsNotEmpty()
+  projectAddress: string;
 }

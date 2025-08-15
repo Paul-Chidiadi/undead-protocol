@@ -49,7 +49,7 @@ export class ResourcesService {
         tx: txResponse,
       },
     } = await client.createCreateNewResourceTransaction({
-      project: projectAddress,
+      project: createResource.projectAddress,
       authority: signer.publicKey.toString(),
       payer: signer.publicKey.toString(),
 
@@ -107,7 +107,7 @@ export class ResourcesService {
         tx: txResponse,
       },
     } = await client.createCreateNewResourceTreeTransaction({
-      project: projectAddress.toString(),
+      project: body.projectAddress,
       authority: signer.publicKey.toString(),
       payer: signer.publicKey.toString(),
 
@@ -174,7 +174,7 @@ export class ResourcesService {
     } = await client.createUpdateBadgeCriteriaTransaction({
       args: {
         authority: signer.publicKey.toString(),
-        projectAddress: projectAddress,
+        projectAddress: body.projectAddress,
         payer: signer.publicKey.toString(),
         criteriaIndex: 0,
         condition: BadgesCondition.Public,
