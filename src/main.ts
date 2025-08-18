@@ -59,7 +59,7 @@ async function bootstrap() {
   });
 
   // Schedule cron job to run every 13 minutes
-  cron.schedule('*/1 * * * *', async () => {
+  cron.schedule('*/13 * * * *', async () => {
     try {
       const url =
         process.env.NODE_ENV === 'developement'
