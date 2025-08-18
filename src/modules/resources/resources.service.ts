@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { envConfig } from 'src/common/config/env.config';
 import {
   CreateBadgeDto,
+  CreateProjectDto,
   CreateResourceDto,
   CreateResourceTreeDto,
 } from './dto/create-resource.dto';
@@ -21,6 +22,126 @@ const PRIVATE_KEY = envConfig.PRIVATE_KEY;
 
 @Injectable()
 export class ResourcesService {
+  // CREATE USER
+  async createUser(body: CreateProjectDto): Promise<{ response: any }> {
+    if (!PRIVATE_KEY) {
+      throw new HttpException(
+        'PRIVATE KEY ERROR',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+
+    const privateKeyBuffer = bs58.decode(PRIVATE_KEY);
+    const signer = web3.Keypair.fromSecretKey(new Uint8Array(privateKeyBuffer));
+
+    if (AUTH_PASSWORD !== body.authPass) {
+      throw new HttpException(
+        'Your are not authorized to perform this transaction',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+
+    const { createNewUserTransaction: txResponse } =
+      await client.createNewUserTransaction({
+        wallet: signer.publicKey.toString(),
+        info: {
+          name: 'Rust Undead User',
+          pfp: 'https://sapphire-geographical-goat-695.mypinata.cloud/ipfs/bafybeiaacppmhed4zya5uwiv2nailjuqfiky767mlux5jxbjxuyow4mr54',
+          bio: 'This is Rust undead user',
+        },
+        payer: signer.publicKey.toString(),
+      });
+
+    // Send the transaction
+    const response = await sendTransactions(
+      client,
+      {
+        transactions: [txResponse.transaction],
+        blockhash: txResponse.blockhash,
+        lastValidBlockHeight: txResponse.lastValidBlockHeight,
+      },
+      [signer],
+    );
+
+    return {
+      response: response[0].responses,
+    };
+  }
+
+  // CREATE PROJECT
+  async createProject(
+    body: CreateProjectDto,
+  ): Promise<{ projectAddress: string }> {
+    if (AUTH_PASSWORD !== body.authPass) {
+      throw new HttpException(
+        'Your are not authorized to perform this transaction',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+
+    if (!PRIVATE_KEY) {
+      throw new HttpException(
+        'PRIVATE KEY ERROR',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+
+    // Create keypair from private key
+    const privateKeyBuffer = bs58.decode(PRIVATE_KEY);
+    const signer = web3.Keypair.fromSecretKey(new Uint8Array(privateKeyBuffer));
+
+    const {
+      createCreateProjectTransaction: {
+        project: projectAddress,
+        tx: txResponse,
+      },
+    } = await client.createCreateProjectTransaction({
+      name: 'RUST UNDEAD',
+      authority: signer.publicKey.toString(),
+      payer: signer.publicKey.toString(),
+      profileDataConfig: {
+        achievements: [
+          'First Genesis', // Created first warrior (started the game)
+          'Battle Initiate', // Won first battle
+          'Warrior Commander', // Created 5 battle rooms
+          'Knowledge Seeker', // Completed first study phase
+          'Battle Veteran', // Won 10 battles
+          'Undead Legend', // Reached leaderboard top 10
+          'Eternal Warrior', // Ultimate achievement (100+ battles won)
+        ],
+        customDataFields: [
+          'Commander Rank', // Player progression level
+          'Battle Experience', // XP points from battles
+          'Victories Earned', // Total battles won
+          'Warriors Created', // Number of minted warriors
+          'Study Sessions', // Completed concept studies
+          'Active Battle Days', // Days with battle activity
+          'Current Warrior', // Currently selected warrior
+          'Battle Equipment', // Warrior stats/abilities
+          'Health Status', // Current warrior condition
+          'Last Battle Time', // Most recent battle timestamp
+          'Combat Hours', // Total time in battles
+          'Warrior Class', // Validator/Oracle/Guardian/Daemon
+        ],
+      },
+    });
+
+    // Send the transaction
+    const response = await sendTransactions(
+      client,
+      {
+        transactions: [txResponse.transaction],
+        blockhash: txResponse.blockhash,
+        lastValidBlockHeight: txResponse.lastValidBlockHeight,
+      },
+      [signer],
+    );
+
+    return {
+      projectAddress: projectAddress,
+    };
+  }
+
   // CREATE RESOURCE
   async createResource(
     createResource: CreateResourceDto,

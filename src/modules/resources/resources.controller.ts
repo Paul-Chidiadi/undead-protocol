@@ -9,6 +9,7 @@ import {
 import { ResourcesService } from './resources.service';
 import {
   CreateBadgeDto,
+  CreateProjectDto,
   CreateResourceDto,
   CreateResourceTreeDto,
 } from './dto/create-resource.dto';
@@ -73,6 +74,39 @@ export class ResourcesController {
     }
     throw new HttpException(
       'Unable to Create Badge. Please try again later!',
+      HttpStatus.INTERNAL_SERVER_ERROR,
+    );
+  }
+
+  @Post('project')
+  @ApiOperation({ summary: 'Create Project' })
+  @ApiResponse({ status: 200, description: 'Successful' })
+  @ApiBadRequestResponse({ description: 'Unable to Create Project' })
+  async createProject(
+    @Body() body: CreateProjectDto,
+    @Res() response: Response,
+  ) {
+    const badge = await this.resourcesService.createProject(body);
+    if (badge) {
+      return CreateSuccessResponse(response, badge, 'Successful');
+    }
+    throw new HttpException(
+      'Unable to Create Project. Please try again later!',
+      HttpStatus.INTERNAL_SERVER_ERROR,
+    );
+  }
+
+  @Post('user')
+  @ApiOperation({ summary: 'Create User' })
+  @ApiResponse({ status: 200, description: 'Successful' })
+  @ApiBadRequestResponse({ description: 'Unable to Create User' })
+  async createUser(@Body() body: CreateProjectDto, @Res() response: Response) {
+    const user = await this.resourcesService.createUser(body);
+    if (user) {
+      return CreateSuccessResponse(response, user, 'Successful');
+    }
+    throw new HttpException(
+      'Unable to Create User. Please try again later!',
       HttpStatus.INTERNAL_SERVER_ERROR,
     );
   }

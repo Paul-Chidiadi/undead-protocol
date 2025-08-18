@@ -100,3 +100,12 @@ export class CreateBadgeDto {
   @IsNotEmpty()
   projectAddress: string;
 }
+
+export class CreateProjectDto {
+  @ApiProperty({
+    description: 'admin authenticated password',
+  })
+  @IsString()
+  @IsNotEmpty()
+  authPass: string;
+}
