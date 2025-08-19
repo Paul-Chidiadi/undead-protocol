@@ -9,9 +9,14 @@ import {
 import { ResourcesService } from './resources.service';
 import {
   CreateBadgeDto,
+  CreateProfileDto,
+  CreateProfileTreeDto,
   CreateProjectDto,
   CreateResourceDto,
   CreateResourceTreeDto,
+  CreateUserDto,
+  MintResourceDto,
+  OnboardUserDto,
 } from './dto/create-resource.dto';
 import { CreateSuccessResponse } from 'src/common/utils/response.utils';
 import { Response } from 'express';
@@ -41,6 +46,21 @@ export class ResourcesController {
     }
     throw new HttpException(
       'Unable to Create Resource. Please try again later!',
+      HttpStatus.INTERNAL_SERVER_ERROR,
+    );
+  }
+
+  @Post('mint')
+  @ApiOperation({ summary: 'Mint token Resource to players' })
+  @ApiResponse({ status: 200, description: 'Successful' })
+  @ApiBadRequestResponse({ description: 'Unable to Mint Resource' })
+  async mintResource(@Body() body: MintResourceDto, @Res() response: Response) {
+    const resource = await this.resourcesService.mintResource(body);
+    if (resource) {
+      return CreateSuccessResponse(response, resource, 'Successful');
+    }
+    throw new HttpException(
+      'Unable to Mint Token Resource to user. Please try again later!',
       HttpStatus.INTERNAL_SERVER_ERROR,
     );
   }
@@ -96,17 +116,68 @@ export class ResourcesController {
     );
   }
 
+  @Post('profile-tree')
+  @ApiOperation({ summary: 'Create Profile Tree' })
+  @ApiResponse({ status: 200, description: 'Successful' })
+  @ApiBadRequestResponse({ description: 'Unable to Create Profile Tree' })
+  async createProfileTree(
+    @Body() body: CreateProfileTreeDto,
+    @Res() response: Response,
+  ) {
+    const profileTree = await this.resourcesService.createProfileTree(body);
+    if (profileTree) {
+      return CreateSuccessResponse(response, profileTree, 'Successful');
+    }
+    throw new HttpException(
+      'Unable to Create Profile Tree. Please try again later!',
+      HttpStatus.INTERNAL_SERVER_ERROR,
+    );
+  }
+
   @Post('user')
   @ApiOperation({ summary: 'Create User' })
   @ApiResponse({ status: 200, description: 'Successful' })
   @ApiBadRequestResponse({ description: 'Unable to Create User' })
-  async createUser(@Body() body: CreateProjectDto, @Res() response: Response) {
+  async createUser(@Body() body: CreateUserDto, @Res() response: Response) {
     const user = await this.resourcesService.createUser(body);
     if (user) {
       return CreateSuccessResponse(response, user, 'Successful');
     }
     throw new HttpException(
       'Unable to Create User. Please try again later!',
+      HttpStatus.INTERNAL_SERVER_ERROR,
+    );
+  }
+
+  @Post('profile')
+  @ApiOperation({ summary: 'Create Profile' })
+  @ApiResponse({ status: 200, description: 'Successful' })
+  @ApiBadRequestResponse({ description: 'Unable to Create Profile' })
+  async createProfile(
+    @Body() body: CreateProfileDto,
+    @Res() response: Response,
+  ) {
+    const user = await this.resourcesService.createProfile(body);
+    if (user) {
+      return CreateSuccessResponse(response, user, 'Successful');
+    }
+    throw new HttpException(
+      'Unable to Create Profile. Please try again later!',
+      HttpStatus.INTERNAL_SERVER_ERROR,
+    );
+  }
+
+  @Post('onboard')
+  @ApiOperation({ summary: 'Onboard User' })
+  @ApiResponse({ status: 200, description: 'Successful' })
+  @ApiBadRequestResponse({ description: 'Unable to Onboard User' })
+  async onboardUser(@Body() body: OnboardUserDto, @Res() response: Response) {
+    const user = await this.resourcesService.onboardUser(body);
+    if (user) {
+      return CreateSuccessResponse(response, user, 'Successful');
+    }
+    throw new HttpException(
+      'Unable to Onboard User. Please try again later!',
       HttpStatus.INTERNAL_SERVER_ERROR,
     );
   }

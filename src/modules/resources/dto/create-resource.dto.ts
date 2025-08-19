@@ -84,6 +84,24 @@ export class CreateResourceTreeDto {
   projectAddress: string;
 }
 
+export class MintResourceDto {
+  @ApiProperty({
+    description: 'Amount of resource to mint',
+    example: '1000',
+  })
+  @IsString()
+  @IsNotEmpty()
+  amount: string;
+
+  @ApiProperty({
+    description: 'Wallet Address of the user',
+    example: 'Ech68sbvs88sndv9s8vnbsvns0HLqrstUvw',
+  })
+  @IsString()
+  @IsNotEmpty()
+  walletAddress: string;
+}
+
 export class CreateBadgeDto {
   @ApiProperty({
     description: 'admin authenticated password',
@@ -108,4 +126,73 @@ export class CreateProjectDto {
   @IsString()
   @IsNotEmpty()
   authPass: string;
+}
+
+export class CreateProfileTreeDto {
+  @ApiProperty({
+    description: 'admin authenticated password',
+  })
+  @IsString()
+  @IsNotEmpty()
+  authPass: string;
+}
+
+export class CreateProfileDto {
+  @ApiProperty({
+    description: 'wallet address of the user',
+    example: 'Ech68sbvs88sndv9s8vnbsvns0HLqrstUvw',
+  })
+  @IsString()
+  @IsNotEmpty()
+  walletAddress: string;
+
+  @ApiProperty({
+    description: 'access token of the user',
+    example: 'Ech68sbvs88sndv9s8vnbsvns0HLqrstUvw',
+  })
+  @IsString()
+  @IsNotEmpty()
+  accessToken: string;
+}
+
+export class CreateUserDto {
+  @ApiProperty({
+    description: 'wallet address of the user',
+    example: 'Ech68sbvs88sndv9s8vnbsvns0HLqrstUvw',
+  })
+  @IsString()
+  @IsNotEmpty()
+  walletAddress: string;
+
+  @ApiProperty({
+    description: 'name of user',
+  })
+  @IsString()
+  @IsNotEmpty()
+  name: string;
+}
+
+export class OnboardUserDto {
+  @ApiProperty({
+    description: 'wallet address of the user',
+    example: 'Ech68sbvs88sndv9s8vnbsvns0HLqrstUvw',
+  })
+  @IsString()
+  @IsNotEmpty()
+  walletAddress: string;
+
+  @ApiProperty({
+    description: 'access token of the user',
+    example: 'Ech68sbvs88sndv9s8vnbsvns0HLqrstUvw',
+  })
+  @IsString()
+  @IsNotEmpty()
+  accessToken: string;
+
+  @ApiProperty({
+    description: 'name of user',
+  })
+  @IsString()
+  @IsNotEmpty()
+  name: string;
 }
