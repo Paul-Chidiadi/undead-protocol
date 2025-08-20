@@ -43,13 +43,13 @@ export class ResourcesService {
     return usersArray;
   }
 
-  async getProfile(honeyAccountAddress: string): Promise<any[]> {
+  async getProfile(honeyAccountAddress: string, id: number): Promise<any[]> {
     const profilesArray = await client
       .findProfiles({
-        userIds: [],
-        projects: [],
-        addresses: [honeyAccountAddress],
-        identities: [],
+        userIds: [902],
+        // projects: [projectAddress.toString()],
+        // addresses: [honeyAccountAddress],
+        // identities: [],
         includeProof: true,
       })
       .then(({ profile }) => profile);
@@ -461,7 +461,7 @@ export class ResourcesService {
       await client.createNewProfileTransaction(
         {
           project: projectAddress.toString(),
-          payer: body.walletAddress.toString(),
+          payer: signer.publicKey.toString(),
           identity: 'main',
           // info: {
           //   // Optional, profile information, all values in the object are optional
@@ -530,9 +530,11 @@ export class ResourcesService {
 
     //CHECK IF USER HAS PROFILE ALREADY
     const existingProfileData = await this.getProfile(
-      userData[0].address.toString(),
+      userData.userData[0].address.toString(),
+      userData.userData[0].id,
     );
-    if (existingProfileData) {
+
+    if (existingProfileData.length > 0) {
       return { userData, profileData: existingProfileData };
     } else {
       const createProfile = await this.createProfile({
@@ -540,7 +542,10 @@ export class ResourcesService {
         accessToken,
       });
 
-      const profileData = await this.getProfile(userData[0].address.toString());
+      const profileData = await this.getProfile(
+        userData.userData[0].address.toString(),
+        userData.userData[0].id,
+      );
       return { userData, profileData };
     }
   }
