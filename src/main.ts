@@ -64,7 +64,7 @@ async function bootstrap() {
       const url =
         process.env.NODE_ENV === 'developement'
           ? `localhost:5000`
-          : `https://undead-protocol.onrender.com`;
+          : `https://undead-protocol-uam2.onrender.com`;
       const response = await axios.get(url);
       console.log(
         `[${new Date().toISOString()}] Pinged self:`,
