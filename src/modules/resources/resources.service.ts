@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { envConfig } from 'src/common/config/env.config';
+import { envConfig } from 'src/common/config/config';
 import {
   CreateBadgeDto,
   CreateProfileDto,

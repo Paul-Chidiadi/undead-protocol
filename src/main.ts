@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
-import { envConfig } from './common/config/env.config';
+import { envConfig } from './common/config/config';
 import * as cookieParser from 'cookie-parser';
 import * as hpp from 'hpp';
 import helmet from 'helmet';

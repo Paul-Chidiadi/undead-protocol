@@ -6,3 +6,8 @@ export const getDateString = () => {
 
   return `${year}-${month}-${day}`;
 };
+
+export const dbTimeStamp = {
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+};

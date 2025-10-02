@@ -22,7 +22,9 @@
   "dependencies": {
     "@honeycomb-protocol/edge-client": "^0.0.7-beta.15",
     "@nestjs/common": "^11.0.1",
+    "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.0.1",
+    "@nestjs/mongoose": "^11.0.3",
     "@nestjs/platform-express": "^11.0.1",
     "@nestjs/swagger": "^11.2.0",
     "@nestjs/websockets": "^11.1.6",
@@ -36,6 +38,8 @@
     "dotenv": "^17.2.1",
     "helmet": "^8.1.0",
     "hpp": "^0.2.3",
+    "mongodb": "^6.20.0",
+    "mongoose": "^8.18.3",
     "nest-winston": "^1.10.2",
     "node-cron": "^4.2.1",
     "reflect-metadata": "^0.2.2",
