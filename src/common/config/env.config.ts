@@ -13,3 +13,7 @@ export const envConfig = {
   PRIVATE_KEY: process.env.PRIVATE_KEY,
   AUTH_PASSWORD: process.env.AUTH_PASSWORD,
 };
+
+export const databaseConfig = {
+  uri: process.env.MONGO_DB_URL,
+};
