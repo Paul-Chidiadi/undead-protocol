@@ -43,7 +43,7 @@ export class Topic {
   @Prop({ type: LearningContent })
   learning_content: LearningContent;
 
-  @Prop({ type: Question })
+  @Prop({ type: [Question] })
   questions: Question[];
 }
 
@@ -61,7 +61,7 @@ export class Concept extends TimeStampWithDocument {
   @Prop({ required: true })
   description: string;
 
-  @Prop({ type: Topic })
+  @Prop({ type: [Topic] })
   topics: Topic[];
 }
 export type ConceptDocument = HydratedDocument<Concept>;
