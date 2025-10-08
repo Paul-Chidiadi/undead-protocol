@@ -11,8 +11,6 @@ import { WinstonModule } from 'nest-winston';
 import instance from '../winston.config';
 import { ValidatorErrorHandler } from './common/pipes/validation.pipe';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import axios from 'axios';
-import cron from 'node-cron';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -56,23 +54,6 @@ async function bootstrap() {
     swaggerOptions: {
       persistAuthorization: true,
     },
-  });
-
-  // Schedule cron job to run every 13 minutes
-  cron.schedule('*/13 * * * *', async () => {
-    try {
-      const url =
-        process.env.NODE_ENV === 'developement'
-          ? `localhost:5000`
-          : `https://undead-protocol-uam2.onrender.com`;
-      const response = await axios.get(url);
-      console.log(
-        `[${new Date().toISOString()}] Pinged self:`,
-        response.status,
-      );
-    } catch (error: any) {
-      console.error('Error pinging self:', error.message);
-    }
   });
 
   // Enable trust proxy header
