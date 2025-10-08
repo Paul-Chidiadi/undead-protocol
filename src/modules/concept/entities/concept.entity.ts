@@ -49,7 +49,6 @@ export class Topic {
 
 @Schema({
   id: true,
-  timestamps: dbTimeStamp,
 })
 export class Concept extends TimeStampWithDocument {
   @Prop({ required: true, unique: true })
