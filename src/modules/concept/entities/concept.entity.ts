@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 import { Model } from 'mongoose';
 import { dbTimeStamp } from 'src/common/utils/utils.service';
-import { CounterDocument } from './counter.entity';
+import { CounterDocument, CounterModel } from './counter.entity';
 import { TimeStampWithDocument } from 'src/common/utils/timestamp.entity';
 
 // subSchema for LearningContent
@@ -49,8 +49,9 @@ export class Topic {
 
 @Schema({
   id: true,
+  timestamps: dbTimeStamp,
 })
-export class Concept extends TimeStampWithDocument {
+export class Conception extends TimeStampWithDocument {
   @Prop({ required: true, unique: true })
   concept_id: number;
 
@@ -63,8 +64,8 @@ export class Concept extends TimeStampWithDocument {
   @Prop({ type: [Topic] })
   topics: Topic[];
 }
-export type ConceptDocument = HydratedDocument<Concept>;
-export const ConceptSchema = SchemaFactory.createForClass(Concept);
+export type ConceptionDocument = HydratedDocument<Conception>;
+export const ConceptionSchema = SchemaFactory.createForClass(Conception);
 
 export async function getNextSequence(
   name: string,
@@ -78,20 +79,20 @@ export async function getNextSequence(
   return counter.seq;
 }
 
-// ConceptSchema.pre<ConceptDocument>('save', async function (next) {
-//   if (this.isNew) {
-//     this.concept_id = await getNextSequence('concept_id', CounterModel);
+ConceptionSchema.pre<ConceptionDocument>('save', async function (next) {
+  if (this.isNew) {
+    this.concept_id = await getNextSequence('concept_id', CounterModel);
 
-//     for (const topic of this.topics) {
-//       topic.topic_id = await getNextSequence('topic_id', CounterModel);
+    for (const topic of this.topics) {
+      topic.topic_id = await getNextSequence('topic_id', CounterModel);
 
-//       for (const question of topic.questions) {
-//         question.question_id = await getNextSequence(
-//           'question_id',
-//           CounterModel,
-//         );
-//       }
-//     }
-//   }
-//   next();
-// });
+      for (const question of topic.questions) {
+        question.question_id = await getNextSequence(
+          'question_id',
+          CounterModel,
+        );
+      }
+    }
+  }
+  next();
+});
