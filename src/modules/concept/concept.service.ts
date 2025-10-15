@@ -10,11 +10,11 @@ import { IConcept, IQuestion, ITopic } from './interface/concept.interface';
 import {
   Conception,
   ConceptionDocument,
+  ConceptionSchema,
   getNextSequence,
 } from './entities/concept.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, AnyBulkWriteOperation } from 'mongoose';
-import { plainToInstance } from 'class-transformer';
 import { Counter, CounterDocument } from './entities/counter.entity';
 
 @Injectable()
@@ -26,7 +26,52 @@ export class ConceptService {
 
     @InjectModel(Counter.name)
     private readonly counterModel: Model<CounterDocument>,
-  ) {}
+  ) {
+    // issue is thati am generating sequences twice - once in your service and once in the pre-save hook.
+    // this.attachPreSaveHook();
+  }
+
+  private attachPreSaveHook() {
+    ConceptionSchema.pre<ConceptionDocument>(
+      'save',
+      async function (next) {
+        try {
+          if (this.isNew) {
+            this.concept_id = await getNextSequence(
+              'concept_id',
+              this.counterModel,
+            );
+
+            if (this.topics && Array.isArray(this.topics)) {
+              for (const topic of this.topics) {
+                if (!topic) continue;
+
+                topic.topic_id = await getNextSequence(
+                  'topic_id',
+                  this.counterModel,
+                );
+
+                if (topic.questions && Array.isArray(topic.questions)) {
+                  for (const question of topic.questions) {
+                    if (!question) continue;
+
+                    question.question_id = await getNextSequence(
+                      'question_id',
+                      this.counterModel,
+                    );
+                  }
+                }
+              }
+            }
+          }
+          next();
+        } catch (error) {
+          console.error('Error in Conception pre-save hook:', error);
+          next(error);
+        }
+      }.bind({ counterModel: this.counterModel }),
+    );
+  }
 
   async getConcepts(): Promise<IConcept[]> {
     return this.conceptsRepository.find({});
@@ -60,9 +105,6 @@ export class ConceptService {
   }
 
   async createConcept(data: ConceptDto): Promise<IConcept> {
-    console.log('here:', data);
-    // const conceptEntity = plainToInstance(Conception, data);
-    // console.log(conceptEntity);
     const payload: Partial<Conception> = {
       concept_id: data.concept_id,
       title: data.title,
@@ -70,53 +112,38 @@ export class ConceptService {
       topics: data.topics,
     };
 
+    // Move sequence generation here
+    payload.concept_id = await getNextSequence('concept_id', this.counterModel);
+    for (const topic of payload.topics || []) {
+      topic.topic_id = await getNextSequence('topic_id', this.counterModel);
+
+      for (const question of topic.questions || []) {
+        question.question_id = await getNextSequence(
+          'question_id',
+          this.counterModel,
+        );
+      }
+    }
+
     const concept = await this.conceptsRepository.create(payload);
-    if (!concept)
+    if (!concept) {
       throw new InternalServerErrorException('Unable to create concept');
+    }
     return concept;
   }
 
-  //   async createConcept(data: ConceptDto): Promise<IConcept> {
-  //     console.log('here:', data);
-  //     const conceptEntity = plainToInstance(Conception, data);
-
-  //     console.log(conceptEntity);
-
-  //     // ✅ Move sequence generation here
-  //     conceptEntity.concept_id = await getNextSequence(
-  //       'concept_id',
-  //       this.counterModel,
-  //     );
-
-  //     for (const topic of conceptEntity.topics || []) {
-  //       topic.topic_id = await getNextSequence('topic_id', this.counterModel);
-
-  //       for (const question of topic.questions || []) {
-  //         question.question_id = await getNextSequence(
-  //           'question_id',
-  //           this.counterModel,
-  //         );
-  //       }
-  //     }
-
-  //     const concept = await this.conceptsRepository.create(conceptEntity);
-
-  //     if (!concept) {
-  //       throw new InternalServerErrorException('Unable to create concept');
-  //     }
-
-  //     return concept;
-  //   }
-
   async updateConcept(id: string, data: ConceptDto): Promise<IConcept> {
-    const concept = await this.conceptsRepository.update({ _id: id }, data);
+    const concept = await this.conceptsRepository.update(
+      { concept_id: id },
+      data,
+    );
     if (!concept)
       throw new InternalServerErrorException('Unable to update concept');
     return concept;
   }
 
   async deleteConcept(id: string): Promise<boolean> {
-    const deleted = await this.conceptsRepository.deleteOne({ _id: id });
+    const deleted = await this.conceptsRepository.deleteOne({ concept_id: id });
     if (!deleted)
       throw new InternalServerErrorException('Unable to delete concept');
     return deleted;

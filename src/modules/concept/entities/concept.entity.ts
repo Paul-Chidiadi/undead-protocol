@@ -6,6 +6,7 @@ import { CounterDocument, CounterModel } from './counter.entity';
 import { TimeStampWithDocument } from 'src/common/utils/timestamp.entity';
 
 // subSchema for LearningContent
+@Schema({ _id: false })
 export class LearningContent {
   @Prop({ required: true })
   summary: string;
@@ -18,6 +19,7 @@ export class LearningContent {
 }
 
 // subSchema for Question
+@Schema({ _id: false })
 export class Question {
   @Prop({ required: true, unique: true })
   question_id: number;
@@ -33,6 +35,7 @@ export class Question {
 }
 
 // subSchema for Topic
+@Schema({ _id: false })
 export class Topic {
   @Prop({ required: true, unique: true })
   topic_id: number;
@@ -64,6 +67,7 @@ export class Conception extends TimeStampWithDocument {
   @Prop({ type: [Topic] })
   topics: Topic[];
 }
+
 export type ConceptionDocument = HydratedDocument<Conception>;
 export const ConceptionSchema = SchemaFactory.createForClass(Conception);
 
@@ -71,28 +75,24 @@ export async function getNextSequence(
   name: string,
   counterModel: Model<CounterDocument>,
 ): Promise<number> {
-  const counter = await counterModel.findByIdAndUpdate(
-    name,
-    { $inc: { seq: 1 } },
-    { new: true, upsert: true },
-  );
-  return counter.seq;
+  try {
+    console.log(`Fetching next sequence for: ${name}`);
+    const counter = await counterModel.findByIdAndUpdate(
+      name,
+      { $inc: { seq: 1 } },
+      { new: true, upsert: true },
+    );
+
+    if (!counter) {
+      throw new Error(`Failed to get sequence for ${name}`);
+    }
+
+    console.log(`Next sequence for ${name}: ${counter.seq}`);
+    return counter.seq;
+  } catch (error) {
+    console.error(`Error getting next sequence for ${name}:`, error);
+    throw error;
+  }
 }
 
-ConceptionSchema.pre<ConceptionDocument>('save', async function (next) {
-  if (this.isNew) {
-    this.concept_id = await getNextSequence('concept_id', CounterModel);
-
-    for (const topic of this.topics) {
-      topic.topic_id = await getNextSequence('topic_id', CounterModel);
-
-      for (const question of topic.questions) {
-        question.question_id = await getNextSequence(
-          'question_id',
-          CounterModel,
-        );
-      }
-    }
-  }
-  next();
-});
+// Hook is now defined in ConceptionService to avoid loading CounterModel at schema definition time
