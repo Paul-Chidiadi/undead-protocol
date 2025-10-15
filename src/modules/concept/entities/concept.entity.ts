@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 import { Model } from 'mongoose';
 import { dbTimeStamp } from 'src/common/utils/utils.service';
-import { CounterDocument, CounterModel } from './counter.entity';
+import { CounterDocument } from './counter.entity';
 import { TimeStampWithDocument } from 'src/common/utils/timestamp.entity';
 
 // subSchema for LearningContent

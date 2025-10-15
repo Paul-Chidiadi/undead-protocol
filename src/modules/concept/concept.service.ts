@@ -26,52 +26,7 @@ export class ConceptService {
 
     @InjectModel(Counter.name)
     private readonly counterModel: Model<CounterDocument>,
-  ) {
-    // issue is thati am generating sequences twice - once in your service and once in the pre-save hook.
-    // this.attachPreSaveHook();
-  }
-
-  private attachPreSaveHook() {
-    ConceptionSchema.pre<ConceptionDocument>(
-      'save',
-      async function (next) {
-        try {
-          if (this.isNew) {
-            this.concept_id = await getNextSequence(
-              'concept_id',
-              this.counterModel,
-            );
-
-            if (this.topics && Array.isArray(this.topics)) {
-              for (const topic of this.topics) {
-                if (!topic) continue;
-
-                topic.topic_id = await getNextSequence(
-                  'topic_id',
-                  this.counterModel,
-                );
-
-                if (topic.questions && Array.isArray(topic.questions)) {
-                  for (const question of topic.questions) {
-                    if (!question) continue;
-
-                    question.question_id = await getNextSequence(
-                      'question_id',
-                      this.counterModel,
-                    );
-                  }
-                }
-              }
-            }
-          }
-          next();
-        } catch (error) {
-          console.error('Error in Conception pre-save hook:', error);
-          next(error);
-        }
-      }.bind({ counterModel: this.counterModel }),
-    );
-  }
+  ) {}
 
   async getConcepts(): Promise<IConcept[]> {
     return this.conceptsRepository.find({});

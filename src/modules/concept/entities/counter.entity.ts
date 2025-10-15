@@ -17,9 +17,3 @@ export class Counter extends TimeStampWithDocument {
   seq: number;
 }
 export const CounterSchema = SchemaFactory.createForClass(Counter);
-
-// counter.model.ts
-export const CounterModel = mongoose.model<CounterDocument>(
-  'Counter',
-  CounterSchema,
-);
