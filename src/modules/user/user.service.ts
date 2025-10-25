@@ -35,4 +35,20 @@ export class UserService {
       { $set: updateUndeadUser },
     );
   }
+
+  async getUser(id: string) {
+    const existingUndeadUser = await this.undeadUserRepository.findOne({
+      _id: id,
+    });
+
+    if (!existingUndeadUser) {
+      throw new NotFoundException('Undead User not found');
+    }
+    return existingUndeadUser;
+  }
+
+  async fetchUsers() {
+    const existingUndeadUsers = await this.undeadUserRepository.find({});
+    return existingUndeadUsers;
+  }
 }

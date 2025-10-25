@@ -48,7 +48,7 @@ export class UserController {
   }
 
   @Patch(':id')
-  @ApiOperation({ summary: 'Update a concept by ID' })
+  @ApiOperation({ summary: 'Update a Undead User by ID' })
   @ApiResponse({ status: 200, description: 'Successful' })
   @ApiBadRequestResponse({
     description: 'Unable to Update undead user profile',
@@ -64,6 +64,36 @@ export class UserController {
     }
     throw new HttpException(
       'Unable to Update undead user profile. Please try again later!',
+      HttpStatus.INTERNAL_SERVER_ERROR,
+    );
+  }
+
+  @Get('/:id')
+  @ApiOperation({ summary: 'Get Undead User' })
+  @ApiResponse({ status: 200, description: 'Successful' })
+  @ApiBadRequestResponse({ description: 'Unable to Get Undead User' })
+  async getUser(@Param('id') id: string, @Res() response: Response) {
+    const user = await this.userService.getUser(id);
+    if (user) {
+      return CreateSuccessResponse(response, user, 'Successful');
+    }
+    throw new HttpException(
+      'Unable to Get Undead User. Please try again later!',
+      HttpStatus.INTERNAL_SERVER_ERROR,
+    );
+  }
+
+  @Get('')
+  @ApiOperation({ summary: 'Fetch All Undead User' })
+  @ApiResponse({ status: 200, description: 'Successful' })
+  @ApiBadRequestResponse({ description: 'Unable to Fetch Undead Users' })
+  async fetchUsers(@Res() response: Response) {
+    const users = await this.userService.fetchUsers();
+    if (users) {
+      return CreateSuccessResponse(response, users, 'Successful');
+    }
+    throw new HttpException(
+      'Unable to Fetch Undead Users. Please try again later!',
       HttpStatus.INTERNAL_SERVER_ERROR,
     );
   }
