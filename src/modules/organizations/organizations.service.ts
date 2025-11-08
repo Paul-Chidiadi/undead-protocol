@@ -38,6 +38,9 @@ export class OrganizationsService {
       },
       { ...options },
     );
+    if (!result) {
+      throw new NotFoundException('Organization not found');
+    }
     return result;
   }
 
