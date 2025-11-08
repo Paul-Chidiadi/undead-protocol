@@ -56,6 +56,24 @@ export class OrganizationsController {
     );
   }
 
+  @Get('email/:email')
+  @ApiOperation({ summary: 'Fetch Single Organization by Email' })
+  @ApiResponse({ status: 200, description: 'Successful' })
+  @ApiBadRequestResponse({ description: 'Unable to Fetch Single Organization' })
+  async getOrganizationByEmail(
+    @Param('email') email: string,
+    @Res() response: Response,
+  ) {
+    const organization = await this.organizationsService.findOne({ email });
+    if (organization) {
+      return CreateSuccessResponse(response, organization, 'Successful');
+    }
+    throw new HttpException(
+      'Unable to Fetch Single Organizations. Please try again later!',
+      HttpStatus.INTERNAL_SERVER_ERROR,
+    );
+  }
+
   @Post('')
   @ApiOperation({ summary: 'Create a new Organization' })
   @ApiResponse({ status: 200, description: 'Successful' })
