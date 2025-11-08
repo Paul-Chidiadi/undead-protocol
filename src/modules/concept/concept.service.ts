@@ -10,7 +10,6 @@ import { IConcept, IQuestion, ITopic } from './interface/concept.interface';
 import {
   Conception,
   ConceptionDocument,
-  ConceptionSchema,
   getNextSequence,
 } from './entities/concept.entity';
 import { InjectModel } from '@nestjs/mongoose';
@@ -28,8 +27,8 @@ export class ConceptService {
     private readonly counterModel: Model<CounterDocument>,
   ) {}
 
-  async getConcepts(): Promise<IConcept[]> {
-    return this.conceptsRepository.find({});
+  async getConcepts(organizationId: String): Promise<IConcept[]> {
+    return this.conceptsRepository.find({ organization: organizationId }, {});
   }
 
   async getOneConcept(id: string): Promise<IConcept> {
@@ -38,29 +37,36 @@ export class ConceptService {
     return concept;
   }
 
-  async getOneOrMultipleConcept(ids: number[]): Promise<IConcept[]> {
+  async getOneOrMultipleConcept(ids: number[], organization: string) {
     if (!Array.isArray(ids) || ids.length === 0) {
       throw new BadRequestException('Please provide at least one concept ID');
     }
-    return this.conceptsRepository.findOneOrMultipleConceptByIds(ids);
+    return this.conceptsRepository.findOneOrMultipleConceptByIds(
+      ids,
+      organization,
+    );
   }
 
-  async getOneOrMultipleTopics(ids: number[]): Promise<ITopic[]> {
+  async getOneOrMultipleTopics(ids: number[], organization: string) {
     if (!Array.isArray(ids) || ids.length === 0) {
       throw new BadRequestException('Please provide at least one topic ID');
     }
-    return this.conceptsRepository.findOneOrMultipleTopicByIds(ids);
+    return this.conceptsRepository.findOneOrMultipleTopicByIds(
+      ids,
+      organization,
+    );
   }
 
-  async getOneOrMultipleQuestions(ids: number[]): Promise<IQuestion[]> {
+  async getOneOrMultipleQuestions(ids: number[], organization: string) {
     if (!Array.isArray(ids) || ids.length === 0) {
       throw new BadRequestException('Please provide at least one question ID');
     }
-    return this.conceptsRepository.findOnlyMatchingQuestions(ids);
+    return this.conceptsRepository.findOnlyMatchingQuestions(ids, organization);
   }
 
   async createConcept(data: ConceptDto): Promise<IConcept> {
     const payload: Partial<Conception> = {
+      organization: data.organization,
       concept_id: data.concept_id,
       title: data.title,
       description: data.description,
@@ -87,18 +93,21 @@ export class ConceptService {
     return concept;
   }
 
-  async updateConcept(id: string, data: ConceptDto): Promise<IConcept> {
+  async updateConcept(id: string, data: ConceptDto, organization: string) {
     const concept = await this.conceptsRepository.update(
-      { concept_id: id },
+      { concept_id: id, organization: organization },
       data,
     );
     if (!concept)
-      throw new InternalServerErrorException('Unable to update concept');
+      throw new NotFoundException('Concept not found for this organization');
     return concept;
   }
 
-  async deleteConcept(id: string): Promise<boolean> {
-    const deleted = await this.conceptsRepository.deleteOne({ concept_id: id });
+  async deleteConcept(id: string, organization: string): Promise<boolean> {
+    const deleted = await this.conceptsRepository.deleteOne({
+      concept_id: id,
+      organization: organization,
+    });
     if (!deleted)
       throw new InternalServerErrorException('Unable to delete concept');
     return deleted;

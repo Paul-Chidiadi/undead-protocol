@@ -1,6 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
-import { Model } from 'mongoose';
+import { HydratedDocument, Model, Types } from 'mongoose';
 import { dbTimeStamp } from 'src/common/utils/utils.service';
 import { CounterDocument } from './counter.entity';
 import { TimeStampWithDocument } from 'src/common/utils/timestamp.entity';
@@ -66,6 +65,9 @@ export class Conception extends TimeStampWithDocument {
 
   @Prop({ type: [Topic] })
   topics: Topic[];
+
+  @Prop({ type: Types.ObjectId, ref: 'Organization', required: false })
+  organization: Types.ObjectId | string;
 }
 
 export type ConceptionDocument = HydratedDocument<Conception>;

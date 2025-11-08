@@ -1,3 +1,5 @@
+import { convert } from 'html-to-text';
+
 export const getDateString = () => {
   const date = new Date();
   const year = date.getFullYear();
@@ -10,4 +12,29 @@ export const getDateString = () => {
 export const dbTimeStamp = {
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
+};
+
+export function getFormattedDate() {
+  const currentdate = new Date();
+  const datetime =
+    'Last Sync: ' +
+    currentdate.getDate() +
+    '/' +
+    (currentdate.getMonth() + 1) +
+    '/' +
+    currentdate.getFullYear() +
+    ' @ ' +
+    currentdate.getHours() +
+    ':' +
+    currentdate.getMinutes() +
+    ':' +
+    currentdate.getSeconds();
+  return datetime;
+}
+
+export const convertEmailToText = (html: string) => {
+  const result = convert(html, {
+    wordwrap: 130,
+  });
+  return result;
 };

@@ -9,6 +9,7 @@ import {
   IsNotEmpty,
   IsString,
   ValidateNested,
+  IsMongoId,
 } from 'class-validator';
 
 export class QuestionDto {
@@ -80,6 +81,11 @@ export class TopicDto {
 }
 
 export class ConceptDto {
+  @ApiProperty({ example: '67af312dbbc41234567890aa' })
+  @IsString()
+  @IsMongoId()
+  organization: string;
+
   @ApiProperty({ example: 1 })
   @IsInt()
   @Min(1)

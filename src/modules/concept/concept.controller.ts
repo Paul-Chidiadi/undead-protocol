@@ -26,15 +26,19 @@ import { ConceptDto, GetMultipleConceptsDto } from './dto/concept.dto';
 export class ConceptController {
   constructor(private readonly conceptService: ConceptService) {}
 
-  @Post('/multiple')
+  @Post('/multiple/:organizationId')
   @ApiOperation({ summary: 'Get one or multiple concepts by IDs' })
   @ApiResponse({ status: 200, description: 'Successful' })
   @ApiBadRequestResponse({ description: 'Unable to Get Concepts' })
   async getOneOrMultipleConcept(
     @Body() body: GetMultipleConceptsDto,
+    @Param('organizationId') organizationId: string,
     @Res() response: Response,
   ) {
-    const concept = await this.conceptService.getOneOrMultipleConcept(body.ids);
+    const concept = await this.conceptService.getOneOrMultipleConcept(
+      body.ids,
+      organizationId,
+    );
     if (concept) {
       return CreateSuccessResponse(response, concept, 'Successful');
     }
@@ -44,15 +48,19 @@ export class ConceptController {
     );
   }
 
-  @Post('/topic')
+  @Post('/topic/:organizationId')
   @ApiOperation({ summary: 'Get one or multiple topics by IDs' })
   @ApiResponse({ status: 200, description: 'Successful' })
   @ApiBadRequestResponse({ description: 'Unable to Get Topics' })
   async getOneOrMultipleTopics(
     @Body() body: GetMultipleConceptsDto,
+    @Param('organizationId') organizationId: string,
     @Res() response: Response,
   ) {
-    const topics = await this.conceptService.getOneOrMultipleTopics(body.ids);
+    const topics = await this.conceptService.getOneOrMultipleTopics(
+      body.ids,
+      organizationId,
+    );
     if (topics) {
       return CreateSuccessResponse(response, topics, 'Successful');
     }
@@ -62,16 +70,18 @@ export class ConceptController {
     );
   }
 
-  @Post('/questions')
+  @Post('/questions/:organizationId')
   @ApiOperation({ summary: 'Get one or multiple questions by IDs' })
   @ApiResponse({ status: 200, description: 'Successful' })
   @ApiBadRequestResponse({ description: 'Unable to Get Questions' })
   async getOneOrMultipleQuestions(
     @Body() body: GetMultipleConceptsDto,
+    @Param('organizationId') organizationId: string,
     @Res() response: Response,
   ) {
     const questions = await this.conceptService.getOneOrMultipleQuestions(
       body.ids,
+      organizationId,
     );
     if (questions) {
       return CreateSuccessResponse(response, questions, 'Successful');
@@ -82,12 +92,15 @@ export class ConceptController {
     );
   }
 
-  @Get('/all')
+  @Get('/all/:organizationId')
   @ApiOperation({ summary: 'Fetch all Concepts' })
   @ApiResponse({ status: 200, description: 'Successful' })
   @ApiBadRequestResponse({ description: 'Unable to Get Concepts' })
-  async getConcepts(@Res() response: Response) {
-    const concepts = await this.conceptService.getConcepts();
+  async getConcepts(
+    @Param('organizationId') organizationId: string,
+    @Res() response: Response,
+  ) {
+    const concepts = await this.conceptService.getConcepts(organizationId);
     if (concepts) {
       return CreateSuccessResponse(response, concepts, 'Successful');
     }
@@ -112,16 +125,21 @@ export class ConceptController {
     );
   }
 
-  @Put(':id')
+  @Put(':concept_id/:organizationId')
   @ApiOperation({ summary: 'Update a concept by ID' })
   @ApiResponse({ status: 200, description: 'Successful' })
   @ApiBadRequestResponse({ description: 'Unable to Update Concept' })
   async updateConcept(
     @Body() body: ConceptDto,
-    @Param('id') id: string,
+    @Param('concept_id') concept_id: string,
+    @Param('organizationId') organizationId: string,
     @Res() response: Response,
   ) {
-    const updatedConcepts = await this.conceptService.updateConcept(id, body);
+    const updatedConcepts = await this.conceptService.updateConcept(
+      concept_id,
+      body,
+      organizationId,
+    );
     if (updatedConcepts) {
       return CreateSuccessResponse(response, updatedConcepts, 'Successful');
     }
@@ -131,14 +149,21 @@ export class ConceptController {
     );
   }
 
-  @Delete(':id')
+  @Delete(':concept_id/:organizationId')
   @ApiOperation({ summary: 'Delete a concept by ID' })
   @ApiResponse({ status: 200, description: 'Successful' })
   @ApiBadRequestResponse({ description: 'Unable to Delete Concept' })
-  async deleteConcept(@Param('id') id: string, @Res() response: Response) {
-    const updatedConcepts = await this.conceptService.deleteConcept(id);
-    if (updatedConcepts) {
-      return CreateSuccessResponse(response, updatedConcepts, 'Successful');
+  async deleteConcept(
+    @Param('concept_id') concept_id: string,
+    @Param('organizationId') organizationId: string,
+    @Res() response: Response,
+  ) {
+    const deletedConcepts = await this.conceptService.deleteConcept(
+      concept_id,
+      organizationId,
+    );
+    if (deletedConcepts) {
+      return CreateSuccessResponse(response, deletedConcepts, 'Successful');
     }
     throw new HttpException(
       'Unable to Delete Concept. Please try again later!',
