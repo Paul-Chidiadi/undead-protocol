@@ -13,6 +13,7 @@ import {
 import { ConceptService } from './concept.service';
 import {
   ApiBadRequestResponse,
+  ApiBearerAuth,
   ApiOperation,
   ApiResponse,
   ApiTags,
@@ -30,6 +31,7 @@ export class ConceptController {
   @ApiOperation({ summary: 'Get one or multiple concepts by IDs' })
   @ApiResponse({ status: 200, description: 'Successful' })
   @ApiBadRequestResponse({ description: 'Unable to Get Concepts' })
+  @ApiBearerAuth()
   async getOneOrMultipleConcept(
     @Body() body: GetMultipleConceptsDto,
     @Param('organizationId') organizationId: string,
@@ -52,6 +54,7 @@ export class ConceptController {
   @ApiOperation({ summary: 'Get one or multiple topics by IDs' })
   @ApiResponse({ status: 200, description: 'Successful' })
   @ApiBadRequestResponse({ description: 'Unable to Get Topics' })
+  @ApiBearerAuth()
   async getOneOrMultipleTopics(
     @Body() body: GetMultipleConceptsDto,
     @Param('organizationId') organizationId: string,
@@ -74,6 +77,7 @@ export class ConceptController {
   @ApiOperation({ summary: 'Get one or multiple questions by IDs' })
   @ApiResponse({ status: 200, description: 'Successful' })
   @ApiBadRequestResponse({ description: 'Unable to Get Questions' })
+  @ApiBearerAuth()
   async getOneOrMultipleQuestions(
     @Body() body: GetMultipleConceptsDto,
     @Param('organizationId') organizationId: string,
@@ -96,6 +100,7 @@ export class ConceptController {
   @ApiOperation({ summary: 'Fetch all Concepts' })
   @ApiResponse({ status: 200, description: 'Successful' })
   @ApiBadRequestResponse({ description: 'Unable to Get Concepts' })
+  @ApiBearerAuth()
   async getConcepts(
     @Param('organizationId') organizationId: string,
     @Res() response: Response,
@@ -114,6 +119,7 @@ export class ConceptController {
   @ApiOperation({ summary: 'Create a new concept' })
   @ApiResponse({ status: 200, description: 'Successful' })
   @ApiBadRequestResponse({ description: 'Unable to Create Concept' })
+  @ApiBearerAuth()
   async createConcept(@Body() body: ConceptDto, @Res() response: Response) {
     const concepts = await this.conceptService.createConcept(body);
     if (concepts) {
@@ -129,6 +135,7 @@ export class ConceptController {
   @ApiOperation({ summary: 'Update a concept by ID' })
   @ApiResponse({ status: 200, description: 'Successful' })
   @ApiBadRequestResponse({ description: 'Unable to Update Concept' })
+  @ApiBearerAuth()
   async updateConcept(
     @Body() body: ConceptDto,
     @Param('concept_id') concept_id: string,
@@ -153,6 +160,7 @@ export class ConceptController {
   @ApiOperation({ summary: 'Delete a concept by ID' })
   @ApiResponse({ status: 200, description: 'Successful' })
   @ApiBadRequestResponse({ description: 'Unable to Delete Concept' })
+  @ApiBearerAuth()
   async deleteConcept(
     @Param('concept_id') concept_id: string,
     @Param('organizationId') organizationId: string,
@@ -175,6 +183,7 @@ export class ConceptController {
   @ApiOperation({ summary: 'Repair Global Ids' })
   @ApiResponse({ status: 200, description: 'Successful' })
   @ApiBadRequestResponse({ description: 'Unable to repair ids' })
+  @ApiBearerAuth()
   async repairGlobalIds(@Res() response: Response) {
     const concept = await this.conceptService.repairGlobalIds();
     if (concept) {

@@ -21,13 +21,13 @@ export class Room extends TimeStampWithDocument {
   @Prop({ type: String, required: true, unique: true })
   roomId: string;
 
-  @Prop({ type: String, required: true })
+  @Prop({ type: String })
   playerA: string; // PublicKey stored as string
 
   @Prop({ type: String, default: null })
   playerB: string | null;
 
-  @Prop({ type: String, required: true })
+  @Prop({ type: String })
   warriorA: string;
 
   @Prop({ type: String, default: null })

@@ -13,6 +13,7 @@ import { OrganizationsService } from './organizations.service';
 import { CreateSuccessResponse } from 'src/common/utils/response.utils';
 import {
   ApiBadRequestResponse,
+  ApiBearerAuth,
   ApiOperation,
   ApiResponse,
   ApiTags,
@@ -30,6 +31,7 @@ export class OrganizationsController {
   @ApiOperation({ summary: 'Fetch all Organizations' })
   @ApiResponse({ status: 200, description: 'Successful' })
   @ApiBadRequestResponse({ description: 'Unable to Fetch Organizations' })
+  @ApiBearerAuth()
   async fetchOrganizations(@Res() response: Response) {
     const organizations = await this.organizationsService.find({});
     if (organizations) {
@@ -45,6 +47,7 @@ export class OrganizationsController {
   @ApiOperation({ summary: 'Fetch Single Organization' })
   @ApiResponse({ status: 200, description: 'Successful' })
   @ApiBadRequestResponse({ description: 'Unable to Fetch Single Organization' })
+  @ApiBearerAuth()
   async getOrganization(@Param('id') id: string, @Res() response: Response) {
     const organization = await this.organizationsService.findOne({ _id: id });
     if (organization) {
@@ -60,6 +63,7 @@ export class OrganizationsController {
   @ApiOperation({ summary: 'Fetch Single Organization by Email' })
   @ApiResponse({ status: 200, description: 'Successful' })
   @ApiBadRequestResponse({ description: 'Unable to Fetch Single Organization' })
+  @ApiBearerAuth()
   async getOrganizationByEmail(
     @Param('email') email: string,
     @Res() response: Response,
@@ -78,6 +82,7 @@ export class OrganizationsController {
   @ApiOperation({ summary: 'Create a new Organization' })
   @ApiResponse({ status: 200, description: 'Successful' })
   @ApiBadRequestResponse({ description: 'Unable to Create Organization' })
+  @ApiBearerAuth()
   async createOrganization(
     @Body() body: CreateOrganizationDto,
     @Res() response: Response,
@@ -96,6 +101,7 @@ export class OrganizationsController {
   @ApiOperation({ summary: 'Update an Organization by ID' })
   @ApiResponse({ status: 200, description: 'Successful' })
   @ApiBadRequestResponse({ description: 'Unable to Update Organization' })
+  @ApiBearerAuth()
   async updateOrganization(
     @Body() body: UpdateOrganizationDto,
     @Param('id') id: string,

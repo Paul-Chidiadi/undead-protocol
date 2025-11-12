@@ -5,7 +5,6 @@ import {
   Body,
   Patch,
   Param,
-  Delete,
   Res,
   HttpStatus,
   HttpException,
@@ -13,6 +12,7 @@ import {
 import { UserService } from './user.service';
 import {
   ApiBadRequestResponse,
+  ApiBearerAuth,
   ApiOperation,
   ApiResponse,
   ApiTags,
@@ -33,6 +33,7 @@ export class UserController {
   @ApiBadRequestResponse({
     description: 'Unable to Create Undead User profile',
   })
+  @ApiBearerAuth()
   async createUndeadUser(
     @Body() body: CreateUndeadUserDto,
     @Res() response: Response,
@@ -53,6 +54,7 @@ export class UserController {
   @ApiBadRequestResponse({
     description: 'Unable to Update undead user profile',
   })
+  @ApiBearerAuth()
   async updateUndeadUser(
     @Body() body: UpdateUndeadUserDto,
     @Param('id') id: string,
@@ -72,6 +74,7 @@ export class UserController {
   @ApiOperation({ summary: 'Get Undead User' })
   @ApiResponse({ status: 200, description: 'Successful' })
   @ApiBadRequestResponse({ description: 'Unable to Get Undead User' })
+  @ApiBearerAuth()
   async getUser(@Param('id') id: string, @Res() response: Response) {
     const user = await this.userService.getUser(id);
     if (user) {
@@ -87,6 +90,7 @@ export class UserController {
   @ApiOperation({ summary: 'Fetch All Undead User' })
   @ApiResponse({ status: 200, description: 'Successful' })
   @ApiBadRequestResponse({ description: 'Unable to Fetch Undead Users' })
+  @ApiBearerAuth()
   async fetchUsers(@Res() response: Response) {
     const users = await this.userService.fetchUsers();
     if (users) {

@@ -12,6 +12,7 @@ import {
 import { RoomsService } from './rooms.service';
 import {
   ApiBadRequestResponse,
+  ApiBearerAuth,
   ApiOperation,
   ApiResponse,
   ApiTags,
@@ -30,6 +31,7 @@ export class RoomsController {
   @ApiOperation({ summary: 'Fetch all Rooms for an Organization' })
   @ApiResponse({ status: 200, description: 'Successful' })
   @ApiBadRequestResponse({ description: 'Unable to Fetch Rooms' })
+  @ApiBearerAuth()
   async fetchRooms(
     @Param('organizationId') organizationId: string,
     @Res() response: Response,
@@ -50,8 +52,9 @@ export class RoomsController {
   @ApiOperation({ summary: 'Fetch Single Room' })
   @ApiResponse({ status: 200, description: 'Successful' })
   @ApiBadRequestResponse({ description: 'Unable to Fetch Single Room' })
+  @ApiBearerAuth()
   async getRoom(@Param('id') id: string, @Res() response: Response) {
-    const room = await this.roomsService.findOne({ _id: id });
+    const room = await this.roomsService.findOne({ roomId: id });
     if (room) {
       return CreateSuccessResponse(response, room, 'Successful');
     }
@@ -65,6 +68,7 @@ export class RoomsController {
   @ApiOperation({ summary: 'Create a new Room' })
   @ApiResponse({ status: 200, description: 'Successful' })
   @ApiBadRequestResponse({ description: 'Unable to Create Room' })
+  @ApiBearerAuth()
   async createRoom(@Body() body: CreateRoomDto, @Res() response: Response) {
     const room = await this.roomsService.create(body);
     if (room) {
@@ -80,12 +84,13 @@ export class RoomsController {
   @ApiOperation({ summary: 'Update an Room by ID' })
   @ApiResponse({ status: 200, description: 'Successful' })
   @ApiBadRequestResponse({ description: 'Unable to Update Room' })
+  @ApiBearerAuth()
   async updateRoom(
     @Body() body: UpdateRoomDto,
     @Param('id') id: string,
     @Res() response: Response,
   ) {
-    const updatedRoom = await this.roomsService.update({ _id: id }, body);
+    const updatedRoom = await this.roomsService.update({ roomId: id }, body);
     if (updatedRoom) {
       return CreateSuccessResponse(response, updatedRoom, 'Successful');
     }

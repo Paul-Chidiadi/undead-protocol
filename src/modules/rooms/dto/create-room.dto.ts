@@ -1,14 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsArray,
-  IsBoolean,
   IsEnum,
   IsMongoId,
   IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
-  ValidateIf,
 } from 'class-validator';
 import { BattleState } from '../entities/rooms.entity';
 
@@ -25,6 +23,7 @@ export class CreateRoomDto {
     description: 'Public key of Player A',
     example: '4f3sdg34g34dfgdfgdfgdfg34g3dfg3df',
   })
+  @IsOptional()
   @IsString()
   @IsNotEmpty()
   playerA: string;
@@ -42,6 +41,7 @@ export class CreateRoomDto {
     description: 'Warrior selected by Player A',
     example: 'warrior-01',
   })
+  @IsOptional()
   @IsString()
   @IsNotEmpty()
   warriorA: string;
@@ -111,6 +111,7 @@ export class CreateRoomDto {
     description: 'Battle duration in seconds',
     example: 300,
   })
+  @IsOptional()
   @IsNumber()
   @IsNotEmpty()
   battleDuration: number;
