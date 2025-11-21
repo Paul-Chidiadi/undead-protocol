@@ -44,6 +44,12 @@ export class RoomsService {
     );
   }
 
+  async deleteOne(data: FilterQuery<Room>, options: FindType<Room> = {}) {
+    return await this.roomsRepository.deleteOne({
+      ...data,
+    });
+  }
+
   async update(filterData: FilterQuery<Room>, update: UpdateQuery<Room> = {}) {
     const existingRoom = await this.roomsRepository.update(
       { ...filterData },

@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpException,
   HttpStatus,
@@ -60,6 +61,22 @@ export class RoomsController {
     }
     throw new HttpException(
       'Unable to Fetch Single Room. Please try again later!',
+      HttpStatus.INTERNAL_SERVER_ERROR,
+    );
+  }
+
+  @Delete(':id')
+  @ApiOperation({ summary: 'Delete Single Room' })
+  @ApiResponse({ status: 200, description: 'Successful' })
+  @ApiBadRequestResponse({ description: 'Unable to Delete Single Room' })
+  @ApiBearerAuth()
+  async deleteRoom(@Param('id') id: string, @Res() response: Response) {
+    const room = await this.roomsService.deleteOne({ roomId: id });
+    if (room) {
+      return CreateSuccessResponse(response, room, 'Successful');
+    }
+    throw new HttpException(
+      'Unable to Delete Single Room. Please try again later!',
       HttpStatus.INTERNAL_SERVER_ERROR,
     );
   }
