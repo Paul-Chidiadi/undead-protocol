@@ -7,6 +7,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Res,
 } from '@nestjs/common';
 import { OrganizationsService } from './organizations.service';
@@ -117,6 +118,58 @@ export class OrganizationsController {
     throw new HttpException(
       'Unable to Update Organization. Please try again later!',
       HttpStatus.INTERNAL_SERVER_ERROR,
+    );
+  }
+
+  @Get('leaderboard/:organizationId')
+  @ApiOperation({ summary: 'Get Organization leaderboard' })
+  @ApiResponse({ status: 200, description: 'Successful' })
+  @ApiBadRequestResponse({
+    description: 'Unable to Get Organization leaderboard',
+  })
+  @ApiBearerAuth()
+  async getOrganizationLeaderboard(
+    @Param('organizationId') organizationId: string,
+    @Query('limit') limit?: number,
+    @Query('minBattles') minBattles?: number,
+  ) {
+    return this.organizationsService.getOrganizationLeaderboard({
+      organizationId,
+      limit: limit ? parseInt(limit.toString()) : 10,
+      minBattles: minBattles ? parseInt(minBattles.toString()) : 1,
+    });
+  }
+
+  @Get('leaderboard/:organizationId/player/:playerName')
+  @ApiOperation({ summary: 'Get Organizations player stats' })
+  @ApiResponse({ status: 200, description: 'Successful' })
+  @ApiBadRequestResponse({
+    description: 'Unable to Get Organizations player stats',
+  })
+  @ApiBearerAuth()
+  async getPlayerStats(
+    @Param('organizationId') organizationId: string,
+    @Param('playerName') playerName: string,
+  ) {
+    return this.organizationsService.getPlayerStats(organizationId, playerName);
+  }
+
+  @Get('leaderboard/:organizationId/top/:category')
+  @ApiOperation({ summary: 'Get Organizations top performers' })
+  @ApiResponse({ status: 200, description: 'Successful' })
+  @ApiBadRequestResponse({
+    description: 'Unable to Get Organizations top performers',
+  })
+  @ApiBearerAuth()
+  async getTopPerformers(
+    @Param('organizationId') organizationId: string,
+    @Param('category') category: 'accuracy' | 'wins' | 'battles',
+    @Query('limit') limit?: number,
+  ) {
+    return this.organizationsService.getTopPerformers(
+      organizationId,
+      category,
+      limit ? parseInt(limit.toString()) : 10,
     );
   }
 }

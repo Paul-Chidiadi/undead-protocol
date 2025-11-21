@@ -7,11 +7,13 @@ import {
   OrganizationSchema,
 } from './entities/organizations.entity';
 import { OrganizationRepository } from './organizations.repository';
+import { Room, RoomSchema } from '../rooms/entities/rooms.entity';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: Organization.name, schema: OrganizationSchema },
+      { name: Room.name, schema: RoomSchema },
     ]),
   ],
   controllers: [OrganizationsController],
