@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpException,
   HttpStatus,
@@ -56,6 +57,24 @@ export class OrganizationsController {
     }
     throw new HttpException(
       'Unable to Fetch Single Organizations. Please try again later!',
+      HttpStatus.INTERNAL_SERVER_ERROR,
+    );
+  }
+
+  @Delete(':id')
+  @ApiOperation({ summary: 'Delete Single Organization' })
+  @ApiResponse({ status: 200, description: 'Successful' })
+  @ApiBadRequestResponse({
+    description: 'Unable to Delete Single Organization',
+  })
+  @ApiBearerAuth()
+  async deleteOrganization(@Param('id') id: string, @Res() response: Response) {
+    const organization = await this.organizationsService.deleteOne({ _id: id });
+    if (organization) {
+      return CreateSuccessResponse(response, organization, 'Successful');
+    }
+    throw new HttpException(
+      'Unable to Delete Single Organizations. Please try again later!',
       HttpStatus.INTERNAL_SERVER_ERROR,
     );
   }

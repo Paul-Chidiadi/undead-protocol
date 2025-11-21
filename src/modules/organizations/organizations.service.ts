@@ -62,6 +62,16 @@ export class OrganizationsService {
     return result;
   }
 
+  async deleteOne(
+    data: FilterQuery<Organization>,
+    options: FindType<Organization> = {},
+  ) {
+    const result = await this.organizationRepository.deleteOne({
+      ...data,
+    });
+    return result;
+  }
+
   async find(
     data: FilterQuery<Organization>,
     options: FindType<Organization> = {},
