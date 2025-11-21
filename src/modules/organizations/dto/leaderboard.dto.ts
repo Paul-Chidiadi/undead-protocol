@@ -6,7 +6,6 @@ export class LeaderboardQueryDto {
 
 export class PlayerStats {
   playerName: string;
-  publicKey: string;
   totalBattles: number;
   wins: number;
   losses: number;
