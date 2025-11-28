@@ -112,7 +112,7 @@ export class OrganizationsService {
     // Fetch all completed battles for the organization
     const rooms = await this.roomModel
       .find({
-        organization: new Types.ObjectId(organizationId),
+        organization: organizationId,
         state: BattleState.Completed,
       })
       .exec();
