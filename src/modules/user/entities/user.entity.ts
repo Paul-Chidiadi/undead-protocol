@@ -29,3 +29,5 @@ export class UndeadUser extends TimeStampWithDocument {
 
 export type UndeadUserDocument = HydratedDocument<UndeadUser>;
 export const UndeadUserSchema = SchemaFactory.createForClass(UndeadUser);
+
+

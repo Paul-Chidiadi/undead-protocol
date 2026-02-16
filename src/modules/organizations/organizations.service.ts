@@ -255,16 +255,27 @@ export class OrganizationsService {
     return 'loss';
   }
 
-  private calculateCompositeScore(stats: PlayerStats): number {
-    // Weighted scoring formula
-    // Prioritize: wins, accuracy, consistency
-    const winPoints = stats.wins * 100;
-    const accuracyPoints = stats.accuracy * 10;
-    const consistencyPoints = stats.averageCorrectPerBattle * 20;
-    const participationBonus = Math.min(stats.totalBattles * 5, 100);
+ private calculateCompositeScore(stats: PlayerStats): number {
+  // WINS is the primary driver.
+  const winPoints = stats.wins * 300;
 
-    return winPoints + accuracyPoints + consistencyPoints + participationBonus;
-  }
+  // WIN RATE — rewards sustained dominance, not just lucky one-offs.
+ 
+  const winRateBonus =
+    stats.totalBattles >= 3
+      ? stats.winRate * 2
+      : stats.winRate * 0.5;
+
+  // ACCURACY — meaningful tiebreaker between players with equal wins.
+
+  const accuracyBonus = stats.accuracy * 1.5;
+
+  // PARTICIPATION — incentivises continued play, with a meaningful cap.
+  const participationBonus = Math.min(stats.totalBattles * 15, 300);
+
+  return winPoints + winRateBonus + accuracyBonus + participationBonus;
+}
+
 
   async getPlayerStats(
     organizationId: string,
